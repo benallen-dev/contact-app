@@ -21,7 +21,13 @@ func (c *Contacts) Search(search string) Contacts {
 
 	var results Contacts
 	for _, contact := range *c {
-		if strings.Contains(contact.First, search) || strings.Contains(contact.Last, search) {
+		match := strings.ToLower(search)
+
+		firstMatch := strings.Contains(strings.ToLower(contact.First), match)
+		lastMatch := strings.Contains(strings.ToLower(contact.Last), match)
+		emailMatch := strings.Contains(strings.ToLower(contact.Email), match)
+
+		if firstMatch || lastMatch || emailMatch {
 			results = append(results, contact)
 		}
 	}

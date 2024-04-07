@@ -49,12 +49,12 @@ func main() {
 		var contacts_set []contacts.Contact
 
 		if q == "" {
-			contacts_set = contactList.Search(q)
-		} else {
 			contacts_set = contactList.All()
+		} else {
+			contacts_set = contactList.Search(q)
 		}
 
-		templ.Handler(views.Contacts(contacts_set)).ServeHTTP(w, r)
+		templ.Handler(views.Contacts(contacts_set, q)).ServeHTTP(w, r)
 	})
 
 	err := http.ListenAndServe(":"+PORT, nil)

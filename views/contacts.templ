@@ -6,12 +6,12 @@ import (
 	"github.com/benallen-dev/contact-app/pkg/contacts"
 )
 
-templ Contacts(contacts_set []contacts.Contact) {
+templ Contacts(contacts_set []contacts.Contact, q string) {
 	@Layout() {
 		<div>
 			<form action="/contacts" method="get" class="tool-bar">
 				<label for="search">Search Term</label>
-				<input id="search" type="search" name="q" value="" />
+				<input id="search" type="search" name="q" value={q} />
 				<input type="submit" value="Search" />
 			</form>
 	

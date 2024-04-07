@@ -8,10 +8,12 @@
     border-radius: 8px;
     margin: 16px;
 }
+form {
+	margin-bottom: 24px;
+}
 
 table {
     width: 100%;
-	margin-top: 12px;
     margin-bottom: 12px;
 }
 
