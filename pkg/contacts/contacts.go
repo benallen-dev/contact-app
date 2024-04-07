@@ -6,7 +6,12 @@ import (
 
 type Contacts []Contact
 
+// Not a pointer so arguments are passed by value
+// This means we can mutate them freely
 func (c *Contacts) Add(contact Contact) {
+	newId := len(*c)
+	contact.ID = newId
+
 	*c = append(*c, contact)
 }
 

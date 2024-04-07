@@ -12,28 +12,8 @@ import (
 
 const PORT = "3000"
 
-func newFilledContacts() contacts.Contacts {
-	return contacts.Contacts{
-		contacts.Contact{
-			ID:    1,
-			First: "Ben",
-			Last:  "Allen",
-			Phone: "123-456-7890",
-			Email: "foo@bar.baz",
-		},
-		contacts.Contact{
-			ID:    2,
-			First: "John",
-			Last:  "Doe",
-			Phone: "098-765-4321",
-			Email: "johndoe@random.biz",
-			},
-	}
-}
-	
-
 func main() {
-	contactList := newFilledContacts()
+	contactList := contacts.CreateMockContacts()
 
 	http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/" {
