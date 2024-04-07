@@ -37,6 +37,10 @@ func main() {
 		templ.Handler(views.Contacts(contacts_set, q)).ServeHTTP(w, r)
 	})
 
+	http.HandleFunc("GET /contacts/new", func(w http.ResponseWriter, r *http.Request) {
+		templ.Handler(views.ContactForm(contacts.NewContact("", "", "", ""))).ServeHTTP(w, r)
+	})
+
 	err := http.ListenAndServe(":"+PORT, nil)
 	if err != nil {
 		log.Fatalf("Failed to start server: %v", err)

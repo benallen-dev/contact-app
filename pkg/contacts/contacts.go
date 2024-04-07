@@ -12,6 +12,8 @@ func (c *Contacts) Add(contact Contact) {
 	newId := len(*c)
 	contact.ID = newId
 
+	contact.Errors = make(map[string]string)
+
 	*c = append(*c, contact)
 }
 

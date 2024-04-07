@@ -5,6 +5,7 @@ import (
 	"os"
 	"bufio"
 	"strings"
+	"math/rand"
 )
 
 func CreateMockContacts() Contacts {
@@ -36,5 +37,14 @@ func CreateMockContacts() Contacts {
 		log.Fatal(err)
 	}
 
-	return contacts
+	// Only use 5 random ones
+	var actualContacts Contacts
+
+	for i := 0; i < 5; i++ {
+		randomIndex := rand.Intn(len(contacts))
+
+		actualContacts.Add(contacts[randomIndex])
+	}
+
+	return actualContacts
 }
