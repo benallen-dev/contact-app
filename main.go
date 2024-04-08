@@ -47,6 +47,21 @@ func main() {
 		w.Write([]byte("Not implemented"))
 	})
 
+	http.HandleFunc("GET /contacts/{contactId}", func(w http.ResponseWriter, r *http.Request) {
+		contactId, err := strconv.Atoi(r.PathValue("contactId"))
+		if err != nil {
+			http.Error(w, "Invalid contact ID", http.StatusBadRequest)
+			return
+		}
+
+		contact, err := contactList.Get(contactId)
+		if err != nil {
+			http.Error(w, "Contact not found", http.StatusNotFound)
+			return
+		}
+
+		templ.Handler(views.ContactDetail(contact)).ServeHTTP(w, r)
+	})
 
 	http.HandleFunc("GET /contacts/{contactId}/edit", func(w http.ResponseWriter, r *http.Request) {
 		contactId, err := strconv.Atoi(r.PathValue("contactId"))
