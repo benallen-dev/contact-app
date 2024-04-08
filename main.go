@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"strconv"
 	"net/http"
 
 	"github.com/a-h/templ"
@@ -39,6 +40,34 @@ func main() {
 
 	http.HandleFunc("GET /contacts/new", func(w http.ResponseWriter, r *http.Request) {
 		templ.Handler(views.ContactForm(contacts.NewContact("", "", "", ""))).ServeHTTP(w, r)
+	})
+
+	http.HandleFunc("POST /contacts/new", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotImplemented)
+		w.Write([]byte("Not implemented"))
+	})
+
+
+	http.HandleFunc("GET /contacts/{contactId}/edit", func(w http.ResponseWriter, r *http.Request) {
+		contactId, err := strconv.Atoi(r.PathValue("contactId"))
+		if err != nil {
+			http.Error(w, "Invalid contact ID", http.StatusBadRequest)
+			return
+		}
+
+		contact, err := contactList.Get(contactId)
+		if err != nil {
+			http.Error(w, "Contact not found", http.StatusNotFound)
+			return
+		}
+
+		templ.Handler(views.ContactForm(contact)).ServeHTTP(w, r)
+	})
+
+
+	http.HandleFunc("POST /contacts/{contactId}/edit", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotImplemented)
+		w.Write([]byte("Not implemented"))
 	})
 
 	err := http.ListenAndServe(":"+PORT, nil)

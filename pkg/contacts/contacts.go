@@ -2,6 +2,7 @@ package contacts
 
 import (
 	"strings"
+	"errors"
 )
 
 type Contacts []Contact
@@ -40,4 +41,12 @@ func (c *Contacts) Search(search string) Contacts {
 	}
 
 	return results
+}
+
+func (c *Contacts) Get(id int) (Contact, error) {
+	if id < 0 || id >= len(*c) {
+		return Contact{}, errors.New("Contact not found")
+	}
+
+	return (*c)[id], nil
 }
