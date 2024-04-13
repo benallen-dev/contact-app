@@ -1,9 +1,5 @@
 package contacts
 
-import (
-	"errors"
-)
-
 type Contact struct {
 	ID     int
 	First  string
@@ -36,11 +32,6 @@ func EmptyContact() Contact {
 }
 
 func NewContactFromCSV(d ...string) (Contact, error) {
-	// Watch me cause out of bounds errors assuming csvData has a certain length
-	if len(d) != 5 {
-		return EmptyContact(), errors.New("Incorrect input length")
-	}
-
 	return Contact{
 		First: d[0],
 		Last:  d[1],

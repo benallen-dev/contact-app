@@ -1,9 +1,7 @@
 package contacts
 
 import (
-	"encoding/csv"
 	"errors"
-	"os"
 	"strings"
 )
 
@@ -20,7 +18,7 @@ func (c *Contacts) Add(contact Contact) {
 
 	*c = append(*c, contact)
 
-	// TODO: Append contact to CSV
+	c.WriteAll()
 }
 
 func (c *Contacts) All() Contacts {
@@ -65,30 +63,19 @@ func (c *Contacts) WriteAll() error {
 		entries = append(entries, contact.ToStringArray())
 	}
 
-	// Open file on disk
-	dataFile, err := os.Create(filename)
+	err := WriteCsv(filename, entries)
 	if err != nil {
 		return err
 	}
-	defer dataFile.Close()
-
-	// Write to file
-	csvWriter := csv.NewWriter(dataFile)
-	csvWriter.WriteAll(entries)
-
+	
 	return nil
 }
 
 func (c *Contacts) ReadAll() error {
-	file, err := os.Open(filename)
+	csvData, err := ReadCsv(filename)
 	if err != nil {
 		return err
 	}
-	defer file.Close()
-
-	// Create a csv reader
-	csvReader := csv.NewReader(file)
-	csvData, err := csvReader.ReadAll()
 
 	for _, entry := range csvData {
 		newContact, err := NewContactFromCSV(entry...)
@@ -128,4 +115,3 @@ func (c *Contacts) Update(id int, first, last, email, phone string) (Contact, er
 	return target, nil
 
 }
-

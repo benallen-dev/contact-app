@@ -2,21 +2,19 @@ package views
 
 import (
 	"strconv"
+
 	"github.com/benallen-dev/contact-app/pkg/contacts"
 )
 
-templ ContactDetail (contact contacts.Contact) {
-
+templ ContactDetail(contact contacts.Contact) {
 	@Layout() {
 		<h1>{ contact.First } { contact.Last }</h1>
-		
 		<div>
 			<div>Phone: { contact.Phone }</div>
 			<div>Email: { contact.Email }</div>
 		</div>
-		
 		<p>
-			<a href={ templ.URL("/contacts/" + strconv.Itoa(contact.ID) + "/edit")}>Edit</a>
+			<a href={ templ.URL("/contacts/" + strconv.Itoa(contact.ID) + "/edit") }>Edit</a>
 			<a href="/contacts">Back</a>
 		</p>
 	}
