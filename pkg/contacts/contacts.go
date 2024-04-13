@@ -67,7 +67,7 @@ func (c *Contacts) WriteAll() error {
 	if err != nil {
 		return err
 	}
-	
+
 	return nil
 }
 
@@ -93,10 +93,18 @@ func (c *Contacts) Delete(id int) {
 	// I should have used a map, but I was not smart and so
 	// here we are slicing arrays for each delete
 
-	all := c.All()[0:id]
+	all := c.All()
+
 	newContacts := append(all[0:id], all[id:len(all)-1]...)
 
-	c = &newContacts
+	*c = newContacts
+
+// 	err := (*c).WriteAll()
+// 	if err != nil {
+// 		return err
+// 	}
+
+	return
 }
 
 func (c *Contacts) Update(id int, first, last, email, phone string) (Contact, error) {
@@ -111,6 +119,11 @@ func (c *Contacts) Update(id int, first, last, email, phone string) (Contact, er
 	target.Phone = phone
 
 	(*c)[id] = target
+
+	// err = (*c).WriteAll()
+	// if err != nil {
+	// 	return EmptyContact(), err
+	// }
 
 	return target, nil
 
