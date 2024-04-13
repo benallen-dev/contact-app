@@ -2,8 +2,8 @@ package main
 
 import (
 	"log"
-	"strconv"
 	"net/http"
+	"strconv"
 
 	"github.com/a-h/templ"
 
@@ -14,7 +14,9 @@ import (
 const PORT = "3000"
 
 func main() {
-	contactList := contacts.CreateMockContacts()
+	var contactList contacts.Contacts
+
+	contactList.ReadAll()
 
 	http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/" {
@@ -42,10 +44,6 @@ func main() {
 		templ.Handler(views.ContactForm(contacts.NewContact("", "", "", ""))).ServeHTTP(w, r)
 	})
 
-	http.HandleFunc("POST /contacts/new", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusNotImplemented)
-		w.Write([]byte("Not implemented"))
-	})
 
 	http.HandleFunc("GET /contacts/{contactId}", func(w http.ResponseWriter, r *http.Request) {
 		contactId, err := strconv.Atoi(r.PathValue("contactId"))
@@ -79,10 +77,33 @@ func main() {
 		templ.Handler(views.ContactForm(contact)).ServeHTTP(w, r)
 	})
 
+	http.HandleFunc("POST /contacts/new", func(w http.ResponseWriter, r *http.Request) {
+		first := r.FormValue("first_name")
+		last := r.FormValue("last_name")
+		email := r.FormValue("email")
+		phone := r.FormValue("phone")
+
+		contact := contacts.NewContact(first, last, phone, email)
+		contactList.Add(contact)
+
+		http.Redirect(w, r, "/contacts", http.StatusSeeOther)
+	})
 
 	http.HandleFunc("POST /contacts/{contactId}/edit", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusNotImplemented)
-		w.Write([]byte("Not implemented"))
+		contactId, err := strconv.Atoi(r.PathValue("contactId"))
+		if err != nil {
+			log.Printf("Invalid contact ID: %v", err)
+			http.Error(w, "Invalid contact ID", http.StatusBadRequest)
+		}
+
+		first := r.FormValue("first_name")
+		last := r.FormValue("last_name")
+		email := r.FormValue("email")
+		phone := r.FormValue("phone")
+
+		contactList.Update(contactId, first, last, email, phone)
+
+		http.Redirect(w, r, "/contacts", http.StatusSeeOther)
 	})
 
 	err := http.ListenAndServe(":"+PORT, nil)

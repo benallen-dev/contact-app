@@ -1,12 +1,23 @@
 package views
 
 import (
+	"strconv"
+
 	"github.com/benallen-dev/contact-app/pkg/contacts"
 )
 
+func getFormAction(contact contacts.Contact) string {
+	if contact.ID == -1 {
+		return "/contacts/new"
+	} else {
+		return "/contacts/" + strconv.Itoa(contact.ID) + "/edit"
+	}
+}
+
 templ ContactForm(contact contacts.Contact) {
 	@Layout() {
-		<form action="/contacts/new" method="post">
+		<div>
+			<form action={templ.SafeURL(getFormAction(contact))} method="post">
 		    <fieldset>
 		        <legend>Contact Values</legend>
 		        <p>
@@ -37,6 +48,7 @@ templ ContactForm(contact contacts.Contact) {
 		<p>
 		    <a href="/contacts">Back</a>
 		</p>
+	</div>
 	}
 }
 
