@@ -5,8 +5,6 @@ import (
 	"strings"
 )
 
-var filename string = "data/contacts.csv"
-
 // The ID for a contact is its position in the contacts array
 type Contacts []Contact
 
@@ -17,8 +15,6 @@ func (c *Contacts) Add(contact Contact) {
 	contact.Errors = make(map[string]string)
 
 	*c = append(*c, contact)
-
-	c.WriteAll()
 }
 
 func (c *Contacts) All() Contacts {
@@ -63,7 +59,7 @@ func (c *Contacts) WriteAll() error {
 		entries = append(entries, contact.ToStringArray())
 	}
 
-	err := WriteCsv(filename, entries)
+	err := writeCsv(filename, entries)
 	if err != nil {
 		return err
 	}
@@ -72,7 +68,7 @@ func (c *Contacts) WriteAll() error {
 }
 
 func (c *Contacts) ReadAll() error {
-	csvData, err := ReadCsv(filename)
+	csvData, err := readCsv(filename)
 	if err != nil {
 		return err
 	}
@@ -108,23 +104,24 @@ func (c *Contacts) Delete(id int) {
 }
 
 func (c *Contacts) Update(id int, first, last, email, phone string) (Contact, error) {
-	target, err := c.Get(id)
-	if err != nil {
-		return EmptyContact(), err
+	if id < 0 || id >= len(*c) {
+		return EmptyContact(), errors.New("Contact not found")
 	}
+
+	target := &(*c)[id]
 
 	target.First = first
 	target.Last = last
 	target.Email = email
 	target.Phone = phone
 
-	(*c)[id] = target
+	(*c)[id] = *target
 
-	// err = (*c).WriteAll()
-	// if err != nil {
-	// 	return EmptyContact(), err
-	// }
+	err := c.WriteAll()
+	if err != nil {
+		return EmptyContact(), err
+	}
 
-	return target, nil
+	return *target, nil
 
 }
