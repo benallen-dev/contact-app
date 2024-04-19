@@ -42,6 +42,9 @@ func writeCsv(filename string, data [][]string) error {
 		return err
 	}
 
+	// Clear the file
+	err = dataFile.Truncate(0)
+
 	// Write to file
 	csvWriter := csv.NewWriter(dataFile)
 	writeErr := csvWriter.WriteAll(data)
@@ -67,7 +70,7 @@ func writeCsv(filename string, data [][]string) error {
 	}
 
 	if len(checkData) != len(data) {
-		return errors.New("Row length mismatch")
+		return errors.New("Row count mismatch")
 	}
 
 	for i, row := range checkData {
