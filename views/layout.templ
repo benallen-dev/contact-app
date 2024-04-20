@@ -1,5 +1,9 @@
 package views
 
+import (
+	"github.com/benallen-dev/contact-app/pkg/flash"
+)
+
 templ Layout() {
 
 <!doctype html>
@@ -19,6 +23,9 @@ templ Layout() {
 				<sub-title>A Demo Contacts Application</sub-title>
 			</h1>
 		</header>
+		for _, msg := range flash.Fetch() {
+			<div class="flash">{ msg }</div>
+		}
 		{ children... }
 	</main>
 </body>

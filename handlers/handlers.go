@@ -8,10 +8,13 @@ import (
 	"github.com/a-h/templ"
 
 	"github.com/benallen-dev/contact-app/pkg/contacts"
+	"github.com/benallen-dev/contact-app/pkg/flash"
 	"github.com/benallen-dev/contact-app/views"
 )
 
-var contactList contacts.Contacts
+var (
+	contactList contacts.Contacts
+)
 
 func init() {
 	err := contactList.ReadAll()
@@ -51,7 +54,8 @@ func GetContactDetails(w http.ResponseWriter, r *http.Request) {
 
 	contact, err := contactList.Get(contactId)
 	if err != nil {
-		http.Error(w, "Contact not found", http.StatusNotFound)
+		flash.Queue("Contact not found")
+		http.Redirect(w, r, "/contacts", http.StatusSeeOther)
 		return
 	}
 
@@ -73,7 +77,8 @@ func GetEditContactForm(w http.ResponseWriter, r *http.Request) {
 
 	contact, err := contactList.Get(contactId)
 	if err != nil {
-		http.Error(w, "Contact not found", http.StatusNotFound)
+		flash.Queue("Contact not found")
+		http.Redirect(w, r, "/contacts", http.StatusSeeOther)
 		return
 	}
 
@@ -121,7 +126,7 @@ func PostEditContactForm(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Todo: flash the error
+		flash.Queue(err.Error())
 	}
 
 	http.Redirect(w, r, "/contacts", http.StatusSeeOther)
@@ -130,7 +135,7 @@ func PostEditContactForm(w http.ResponseWriter, r *http.Request) {
 func PostDeleteContact(w http.ResponseWriter, r *http.Request) {
 	contactId, convErr := strconv.Atoi(r.PathValue("contactId"))
 	if convErr != nil {
-		log.Println("Error during delete", convErr)
+		flash.Queue("Error during delete", convErr.Error())
 	}
 
 	log.Println("Deleting contact with ID: ", contactId)
@@ -138,7 +143,7 @@ func PostDeleteContact(w http.ResponseWriter, r *http.Request) {
 
 	writeErr := contactList.WriteAll()
 	if writeErr != nil {
-		log.Println("Error storing delete", writeErr)
+		flash.Queue("Error deleting contact")
 	}
 
 	http.Redirect(w, r, "/contacts", http.StatusSeeOther)

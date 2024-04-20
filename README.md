@@ -10,9 +10,7 @@ Once that's done I'll tag the 1.0 commit and start adding the HTMX features. Per
 
 ## TODO
 
-- [x] validation of field inputs
 - [ ] remove ID property from contact struct
-- [ ] `flash` functionality to queue messages
 
 ## BTW
 
