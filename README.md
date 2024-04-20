@@ -10,9 +10,9 @@ Once that's done I'll tag the 1.0 commit and start adding the HTMX features. Per
 
 ## TODO
 
-- [ ] Delete doesn't persist properly because I suffer from pointer skill issues
+- [x] validation of field inputs
+- [ ] remove ID property from contact struct
 - [ ] `flash` functionality to queue messages
-- [ ] validation of field inputs
 
 ## BTW
 

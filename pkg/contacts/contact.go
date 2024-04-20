@@ -1,5 +1,10 @@
 package contacts
 
+import (
+	"strings"
+	"regexp"
+)
+
 type Contact struct {
 	ID     int
 	First  string
@@ -9,9 +14,17 @@ type Contact struct {
 	Errors map[string]string
 }
 
+type ValidationError struct {
+	s string
+}
+
+func (e ValidationError) Error() string {
+	return e.s
+}
+
 func NewContact(first, last, phone, email string) Contact {
 	return Contact{
-		ID:		-1,
+		ID:     -1,
 		First:  first,
 		Last:   last,
 		Phone:  phone,
@@ -47,4 +60,45 @@ func (c *Contact) ToStringArray() []string {
 		c.Email,
 		c.Phone,
 	}
+}
+
+func (c *Contact) Validate() bool {
+	emailRegex := regexp.MustCompile("^[\\w+-\\.]+@([\\w-]+\\.)+[\\w]{2,4}$")
+	var errors = map[string][]string{
+		"first": {},
+		"last":  {},
+		"email": {},
+		"phone": {},
+	}
+
+	// Clear out any previous errors
+	c.Errors = make(map[string]string)
+
+	if c.First == "" {
+		errors["first"] = append(errors["first"], "First name is required")
+	}
+
+	if c.Last == "" {
+		errors["last"] = append(errors["last"], "Last name is required")
+	}
+
+	if c.Email == "" {
+		errors["email"] = append(errors["email"], "Email is required")
+	}
+
+	if !emailRegex.MatchString(c.Email) {
+		errors["email"] = append(errors["email"], "Email is invalid")
+	}
+
+	if c.Phone == "" {
+		errors["phone"] = append(errors["phone"], "Phone is required")
+	}
+
+	for key,msgs := range errors {
+		if len(msgs) > 0 {
+			c.Errors[key] = strings.Join(msgs, ", ")
+		}
+	}
+
+	return len(c.Errors) == 0
 }

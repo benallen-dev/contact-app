@@ -17,6 +17,17 @@ func (c *Contacts) Add(contact Contact) {
 	*c = append(*c, contact)
 }
 
+func (c *Contacts) AddAndWrite(contact Contact) error {
+	c.Add(contact)
+
+	err := c.WriteAll()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (c *Contacts) All() Contacts {
 	return *c
 }
@@ -85,7 +96,7 @@ func (c *Contacts) ReadAll() error {
 	return nil
 }
 
-func (c *Contacts) Delete(id int) {
+func (c *Contacts) Delete(id int) error {
 	// I should have used a map, but I was not smart and so
 	// here we are slicing arrays for each delete
 
@@ -95,33 +106,40 @@ func (c *Contacts) Delete(id int) {
 
 	*c = newContacts
 
-// 	err := (*c).WriteAll()
-// 	if err != nil {
-// 		return err
-// 	}
+	err := (*c).WriteAll()
+	if err != nil {
+		return err
+	}
 
-	return
+	return nil
 }
 
+// Update a contact by ID
+//
+// If the contact is not found or otherwise fails validation, an error is
+// returned. In the case of validation failure the contact is returned with
+// errors filled in.
+//
+// If the contact is updated successfully, the updated contact is returned
 func (c *Contacts) Update(id int, first, last, email, phone string) (Contact, error) {
 	if id < 0 || id >= len(*c) {
 		return EmptyContact(), errors.New("Contact not found")
 	}
 
-	target := &(*c)[id]
+	updatedContact := NewContact(first, last, phone, email)
+	if !updatedContact.Validate() {
+		return updatedContact, ValidationError{"Invalid contact"}
+	}
 
-	target.First = first
-	target.Last = last
-	target.Email = email
-	target.Phone = phone
-
-	(*c)[id] = *target
+	// Update the entry
+	updatedContact.ID = id
+	(*c)[id] = updatedContact
 
 	err := c.WriteAll()
 	if err != nil {
 		return EmptyContact(), err
 	}
 
-	return *target, nil
-
+	//return *target, nil
+	return updatedContact, nil
 }
