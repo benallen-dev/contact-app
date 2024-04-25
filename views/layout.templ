@@ -6,31 +6,31 @@ import (
 
 templ Layout() {
 
-<!doctype html>
-<html lang="">
-
-<head>
-	<title>Contact App</title>
-	<link rel="stylesheet" href="/site.css"></link>
-	<link rel="stylesheet" href="https://the.missing.style/v0.2.0/missing.min.css"></link>
-	<script src="/htmx.min.js"></script>
-</head>
-
-<body>
-	<main>
-		<header>
-			<h1>
-				<span class="allcaps">contacts.app</span>
-				<sub-title>A Demo Contacts Application</sub-title>
-			</h1>
-		</header>
-		for _, msg := range flash.Fetch() {
-			<div class="flash">{ msg }</div>
-		}
-		{ children... }
-	</main>
-</body>
-
-</html>
+	<!doctype html>
+	<html lang="">
+	
+	<head>
+		<title>Contact App</title>
+		<link rel="stylesheet" href="/site.css"></link>
+		<link rel="stylesheet" href="https://the.missing.style/v0.2.0/missing.min.css"></link>
+		<script src="/htmx.min.js"></script>
+	</head>
+	
+	<body>
+		<main>
+			<header>
+				<h1>
+					<span class="allcaps">contacts.app</span>
+					<sub-title>A Demo Contacts Application</sub-title>
+				</h1>
+			</header>
+			for _, msg := range flash.Fetch() {
+				<div class="flash">{ msg }</div>
+			}
+			{ children... }
+		</main>
+	</body>
+	
+	</html>
 
 }
