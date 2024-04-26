@@ -10,7 +10,11 @@ Once that's done I'll tag the 1.0 commit and start adding the HTMX features. Per
 
 ## Acknowledgements
 
-Instead of pulling CSS from the internet, this project self hosts v0.2.0 of [https://github.com/bigskysoftware/missing](missing.css), which is governed by a [https://www.tldrlegal.com/license/bsd-2-clause-license-freebsd](BSD 2-clause license). The full license text has been prepended as a comment to the CSS file. The benefit of doing this is I noticed 2 redirects and a total of around 60ms before the css was loaded when I was using the CDN version. Now it's ~5ms and 55ms is a lot when your actual document loads in 2ms.
+### Missing.css
+
+Instead of pulling CSS from the internet, this project self hosts v0.2.0 of [missing.css](https://github.com/bigskysoftware/missing), which is governed by a [BSD 2-clause license](https://www.tldrlegal.com/license/bsd-2-clause-license-freebsd). The full license text has been prepended as a comment to the CSS file.
+
+The benefit of doing this is I noticed 2 redirects and a total of around 60ms before the css was loaded when I was using the CDN version. Now it's ~5ms and 55ms is a lot when your actual document loads in 2ms.
 
 ## TODO
 
