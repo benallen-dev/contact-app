@@ -146,5 +146,22 @@ func PostDeleteContact(w http.ResponseWriter, r *http.Request) {
 		flash.Queue("Error deleting contact")
 	}
 
+	http.Redirect(w, r, "/contacts", http.StatusFound)
+}
+
+
+func DeleteContact(w http.ResponseWriter, r *http.Request) {
+	contactId, convErr := strconv.Atoi(r.PathValue("contactId"))
+	if convErr != nil {
+		flash.Queue("Error during delete", convErr.Error())
+	}
+
+	contactList.Delete(contactId)
+
+	writeErr := contactList.WriteAll()
+	if writeErr != nil {
+		flash.Queue("Error deleting contact")
+	}
+
 	http.Redirect(w, r, "/contacts", http.StatusSeeOther)
 }
