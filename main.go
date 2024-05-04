@@ -17,6 +17,7 @@ func main() {
 
 	http.HandleFunc("GET /contacts/{contactId}", handlers.GetContactDetails)
 	http.HandleFunc("GET /contacts/{contactId}/edit", handlers.GetEditContactForm)
+	http.HandleFunc("GET /contacts/{contactId}/email", handlers.ValidateEmail)
 
 	http.HandleFunc("POST /contacts/new", handlers.PostNewContactForm)
 	http.HandleFunc("POST /contacts/{contactId}/edit", handlers.PostEditContactForm)

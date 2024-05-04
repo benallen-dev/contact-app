@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"strings"
 	"strconv"
 
 	"github.com/a-h/templ"
@@ -66,6 +67,7 @@ func GetNewContactForm(w http.ResponseWriter, r *http.Request) {
 	templ.Handler(views.ContactForm(contacts.NewContact("", "", "", ""))).ServeHTTP(w, r)
 }
 
+
 // Because contacts aren't mutated here it doesn't strictly need to be a pointer I think
 func GetEditContactForm(w http.ResponseWriter, r *http.Request) {
 
@@ -85,6 +87,25 @@ func GetEditContactForm(w http.ResponseWriter, r *http.Request) {
 	templ.Handler(views.ContactForm(contact)).ServeHTTP(w, r)
 }
 
+func ValidateEmail(w http.ResponseWriter, r *http.Request) {
+	contactId, err := strconv.Atoi(r.PathValue("contactId"))
+	if err != nil {
+		http.Error(w, "Invalid contact ID", http.StatusBadRequest)
+		return
+	}
+
+	email := r.URL.Query().Get("email")
+
+	errors := []string{}
+
+	targetContact, err := contactList.Get(contactId)
+	targetContact.Email = email
+	contactList.Validate(&targetContact)
+
+	w.Write([]byte(strings.Join(errors, ", ")))
+	
+}
+
 func PostNewContactForm(w http.ResponseWriter, r *http.Request) {
 	first := r.FormValue("first_name")
 	last := r.FormValue("last_name")
@@ -92,15 +113,15 @@ func PostNewContactForm(w http.ResponseWriter, r *http.Request) {
 	phone := r.FormValue("phone")
 
 	contact := contacts.NewContact(first, last, phone, email)
-	if !contact.Validate() {
+	if contactList.Validate(&contact) {
+		err := contactList.AddAndWrite(contact)
+		if err != nil {
+			flash.Queue("Error adding contact")
+			log.Println("Error adding contact", err)
+		}
+	} else {
 		log.Println("Invalid contact", contact.Errors)
 		templ.Handler(views.ContactForm(contact)).ServeHTTP(w, r)
-	}
-
-	err := contactList.AddAndWrite(contact)
-	if err != nil {
-		// Todo: flash
-		log.Println("Error adding contact", err)
 	}
 
 	http.Redirect(w, r, "/contacts", http.StatusSeeOther)

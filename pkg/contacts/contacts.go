@@ -2,6 +2,7 @@ package contacts
 
 import (
 	"errors"
+	"log"
 	"strings"
 )
 
@@ -127,12 +128,14 @@ func (c *Contacts) Update(id int, first, last, email, phone string) (Contact, er
 	}
 
 	updatedContact := NewContact(first, last, phone, email)
-	if !updatedContact.Validate() {
+	updatedContact.ID = id
+
+	if !c.Validate(&updatedContact) {
 		return updatedContact, ValidationError{"Invalid contact"}
 	}
 
-	// Update the entry
-	updatedContact.ID = id
+	log.Printf("%+v", updatedContact)
+
 	(*c)[id] = updatedContact
 
 	err := c.WriteAll()
@@ -142,4 +145,29 @@ func (c *Contacts) Update(id int, first, last, email, phone string) (Contact, er
 
 	//return *target, nil
 	return updatedContact, nil
+}
+
+// Validates the passed contact. Mutates contact.Errors and returns a bool indicating if there were any errors
+func (c *Contacts) Validate(contact *Contact) bool {
+	validContact := contact.Validate()
+	uniqueEmail := c.checkEmailIsFree(contact)
+
+	log.Print(contact.Errors)
+
+	return validContact && uniqueEmail
+}
+
+func (c *Contacts) checkEmailIsFree(contact *Contact) bool {
+	// Check if email is already in use
+	for _, existing := range c.All() {
+		log.Printf("Checking %s (%d) - %s (%d)", existing.Email, existing.ID, contact.Email, contact.ID)
+		if existing.Email == contact.Email && existing.ID != contact.ID {
+
+			log.Printf("%s already exists", existing.Email)
+			contact.Errors["email"] += "Email already in use"
+			return false
+		}
+	}
+
+	return true
 }
