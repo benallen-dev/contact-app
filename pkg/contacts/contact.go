@@ -87,7 +87,7 @@ func (c *Contact) Validate() bool {
 	}
 
 	if !emailRegex.MatchString(c.Email) {
-		errors["email"] = append(errors["email"], "Email is invalid")
+		errors["email"] = append(errors["email"], "Email is invalid - must contain @ and a tld no longer than 4 characters")
 	}
 
 	if c.Phone == "" {

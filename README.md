@@ -16,10 +16,6 @@ Instead of pulling CSS from the internet, this project self hosts v0.2.0 of [mis
 
 The benefit of doing this is I noticed 2 redirects and a total of around 60ms before the css was loaded when I was using the CDN version. Now it's ~5ms and 55ms is a lot when your actual document loads in 2ms.
 
-## TODO
-
-- [ ] remove ID property from contact struct
-
 ## BTW
 
-The structure of this program is pretty terrible with how things depend on each other but writing a nicely-factored application wasn't exactly the goal here.
+The structure of this program is pretty terrible with how things depend on each other but writing a nicely-factored application wasn't exactly the goal here. No, seriously. It's pretty bad, and the validation is a chaotic mess. Frankly I'm surprised it works at all

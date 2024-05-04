@@ -3,7 +3,6 @@ package handlers
 import (
 	"log"
 	"net/http"
-	"strings"
 	"strconv"
 
 	"github.com/a-h/templ"
@@ -96,14 +95,11 @@ func ValidateEmail(w http.ResponseWriter, r *http.Request) {
 
 	email := r.URL.Query().Get("email")
 
-	errors := []string{}
-
 	targetContact, err := contactList.Get(contactId)
 	targetContact.Email = email
 	contactList.Validate(&targetContact)
 
-	w.Write([]byte(strings.Join(errors, ", ")))
-	
+	w.Write([]byte(targetContact.Errors["email"]))
 }
 
 func PostNewContactForm(w http.ResponseWriter, r *http.Request) {

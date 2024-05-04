@@ -22,7 +22,11 @@ templ ContactForm(contact contacts.Contact) {
 					<legend>Contact Values</legend>
 					<p>
 						<label for="email">Email</label>
-						<input name="email" id="email" type="email" placeholder="Email" value={ contact.Email }/>
+						<input name="email" id="email" type="email" placeholder="Email" value={ contact.Email }
+							hx-get={"/contacts/" + strconv.Itoa(contact.ID) + "/email"}
+							hx-target="next .error"
+							hx-trigger="change, keyup delay:200ms changed"
+						/>
 						<span class="error">{ contact.Errors["email"] }</span>
 					</p>
 					<p>
