@@ -11,7 +11,15 @@ templ Contacts(contacts_set []contacts.Contact, q string, page int) {
 		<div>
 			<form action="/contacts" method="get" class="tool-bar">
 				<label for="search">Search Term</label>
-				<input id="search" type="search" name="q" value={ q }/>
+				<input id="search" type="search" name="q" value={ q }
+					hx-get="/contacts"
+					hx-trigger="search, keyup delay:100ms changed"
+					hx-select="tbody tr"
+					hx-target="tbody"
+					hx-push-url="true"
+					hx-indicator="#spinner"
+				/>
+				<img id="spinner" class="htmx-indicator spinner" src="/img/spinning-circles.svg" alt="Request in flight..."></img>
 				<input type="submit" value="Search"/>
 			</form>
 			<table>
@@ -25,19 +33,7 @@ templ Contacts(contacts_set []contacts.Contact, q string, page int) {
 					</tr>
 				</thead>
 				<tbody>
-					for _, contact := range contacts_set {
-						<tr>
-							<td>{ strconv.Itoa(contact.ID) }</td>
-							<td>{ contact.First }</td>
-							<td>{ contact.Last }</td>
-							<td>{ contact.Email }</td>
-							<td>{ contact.Phone }</td>
-							<td>
-								<a href={ templ.URL("/contacts/" + strconv.Itoa(contact.ID) + "/edit") }>Edit</a>
-								<a href={ templ.URL("/contacts/" + strconv.Itoa(contact.ID)) }>View</a>
-							</td>
-						</tr>
-					}
+					@ContactList(contacts_set)
 					if len(contacts_set) == 10 {
 						<tr>
 							<td colspan="5" style="padding: 24px 0; text-align: center">
@@ -47,9 +43,11 @@ templ Contacts(contacts_set []contacts.Contact, q string, page int) {
 									hx-swap="outerHTML"
 									hx-select="tbody > tr"
 									hx-get={ "/contacts?page=" + strconv.Itoa(page + 1) }
+									hx-indicator="#scroll-spinner"
 								>
 									Infinite scrolling is ezpz
 								</span>
+								<img id="scroll-spinner" class="htmx-indicator spinner" src="/img/spinning-circles.svg" height="16px" width="16px" alt="Loading more..."></img>
 							</td>
 						</tr>
 					}

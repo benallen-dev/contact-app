@@ -52,7 +52,11 @@ func GetContacts(w http.ResponseWriter, r *http.Request) {
 		contacts_set = contactList.Search(q)
 	}
 
-	templ.Handler(views.Contacts(contacts_set, q, page)).ServeHTTP(w, r)
+	if r.Header.Get("HX-Trigger") == "search" {
+		templ.Handler(views.ContactList(contacts_set)).ServeHTTP(w, r)
+	} else {
+		templ.Handler(views.Contacts(contacts_set, q, page)).ServeHTTP(w, r)
+	}
 }
 
 func GetContactDetails(w http.ResponseWriter, r *http.Request) {
