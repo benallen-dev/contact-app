@@ -32,17 +32,27 @@ func Root(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetContacts(w http.ResponseWriter, r *http.Request) {
-	q := r.URL.Query().Get("q")
+	const PAGE_SIZE int = 10
 
+	q := r.URL.Query().Get("q")
+	page, err := strconv.Atoi(r.URL.Query().Get("page"))
+	if err != nil {
+		page = 0
+	}
+	
 	var contacts_set []contacts.Contact
 
 	if q == "" {
-		contacts_set = contactList.All()
+		contacts_set, err = contactList.Partial(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+		if err != nil {
+			flash.Queue("Invalid page number, displaying first" + strconv.Itoa(PAGE_SIZE))
+			contacts_set, _ = contactList.Partial(0, PAGE_SIZE)
+		}
 	} else {
 		contacts_set = contactList.Search(q)
 	}
 
-	templ.Handler(views.Contacts(contacts_set, q)).ServeHTTP(w, r)
+	templ.Handler(views.Contacts(contacts_set, q, page)).ServeHTTP(w, r)
 }
 
 func GetContactDetails(w http.ResponseWriter, r *http.Request) {

@@ -33,6 +33,22 @@ func (c *Contacts) All() Contacts {
 	return *c
 }
 
+func (c *Contacts) Count() int {
+	return len(*c)
+}
+
+func (c *Contacts) Partial (start, end int) (Contacts, error) {
+	if start < 0 || end < 0 || start > end {
+		return Contacts{}, errors.New("Invalid range")
+	}
+
+	if end > len(*c) {
+		end = len(*c)
+	}
+
+	return (*c)[start:end], nil
+}
+
 func (c *Contacts) Search(search string) Contacts {
 	if search == "" {
 		return *c
