@@ -13,6 +13,7 @@ func main() {
 	http.HandleFunc("GET /", handlers.Root)
 
 	http.HandleFunc("GET /contacts", handlers.GetContacts)
+	http.HandleFunc("GET /contacts/count", handlers.GetContactCount)
 	http.HandleFunc("GET /contacts/new", handlers.GetNewContactForm)
 
 	http.HandleFunc("GET /contacts/{contactId}", handlers.GetContactDetails)

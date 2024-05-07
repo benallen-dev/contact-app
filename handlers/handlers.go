@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/a-h/templ"
 
@@ -57,6 +58,14 @@ func GetContacts(w http.ResponseWriter, r *http.Request) {
 	} else {
 		templ.Handler(views.Contacts(contacts_set, q, page)).ServeHTTP(w, r)
 	}
+}
+
+func GetContactCount(w http.ResponseWriter, r *http.Request) {
+	count := contactList.Count()
+
+	time.Sleep(1500 * time.Millisecond)
+
+	w.Write([]byte("(" + strconv.Itoa(count) + " total contacts)"))
 }
 
 func GetContactDetails(w http.ResponseWriter, r *http.Request) {
