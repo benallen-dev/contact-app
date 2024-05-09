@@ -35,7 +35,6 @@ func readCsv(filename string) ([][]string, error) {
 func writeCsv(filename string, data [][]string) error {
 
 	log.Println("Writing to file: ", filename)
-	log.Println("Data: ", data)
 	
 	dataFile, err := os.OpenFile(filename, os.O_CREATE|os.O_RDWR, 0664)
 	if err != nil {

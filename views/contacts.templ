@@ -11,7 +11,11 @@ templ Contacts(contacts_set []contacts.Contact, q string, page int) {
 		<div>
 			<form action="/contacts" method="get" class="tool-bar">
 				<label for="search">Search Term</label>
-				<input id="search" type="search" name="q" value={ q }
+				<input
+					id="search"
+					type="search"
+					name="q"
+					value={ q }
 					hx-get="/contacts"
 					hx-trigger="search, keyup delay:100ms changed"
 					hx-select="tbody tr"
@@ -19,7 +23,12 @@ templ Contacts(contacts_set []contacts.Contact, q string, page int) {
 					hx-push-url="true"
 					hx-indicator="#spinner"
 				/>
-				<img id="spinner" class="htmx-indicator spinner" src="/img/spinning-circles.svg" alt="Request in flight..."></img>
+				<img
+					id="spinner"
+					class="htmx-indicator spinner"
+					src="/img/spinning-circles.svg"
+					alt="Request in flight..."
+				/>
 				<input type="submit" value="Search"/>
 			</form>
 			<table>
@@ -41,19 +50,32 @@ templ Contacts(contacts_set []contacts.Contact, q string, page int) {
 									hx-target="closest tr"
 									hx-swap="outerHTML"
 									hx-select="tbody > tr"
-									hx-get={ "/contacts?page=" + strconv.Itoa(page + 1) }
+									hx-get={ "/contacts?page="+strconv.Itoa(page+1) }
 									hx-indicator="#scroll-spinner"
 								>
-								Load More
+									Load More
 								</button>
-								<img id="scroll-spinner" class="htmx-indicator spinner" src="/img/spinning-circles.svg" height="16px" width="16px" alt="Loading more..."></img>
+								<img
+									id="scroll-spinner"
+									class="htmx-indicator spinner"
+									src="/img/spinning-circles.svg"
+									alt="Loading more..."
+								/>
 							</td>
 						</tr>
 					}
 				</tbody>
 			</table>
 			<p>
-				<a href=" /contacts/new">Add Contact</a> <span hx-get="/contacts/count" hx-trigger="load" hx-indicator="#count-spinner"></span> <img id="count-spinner" class="htmx-indicator spinner" src="/img/spinning-circles.svg" height="16px" width="16px" alt="Loading more..."></img>
+				<a href=" /contacts/new">Add Contact</a>
+				<span hx-get="/contacts/count" hx-trigger="load">
+					<img
+						id="count-spinner"
+						class="htmx-indicator spinner"
+						src="/img/spinning-circles.svg"
+						alt="Loading count"
+					/>
+				</span>
 			</p>
 		</div>
 	}

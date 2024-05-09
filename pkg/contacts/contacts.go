@@ -75,7 +75,13 @@ func (c *Contacts) Get(id int) (Contact, error) {
 		return Contact{}, errors.New("Contact not found")
 	}
 
-	return (*c)[id], nil
+	for _, t := range c.All() {
+		if t.ID == id {
+			return t, nil
+		}
+	}
+
+	return Contact{}, errors.New("Contact not found")
 }
 
 // This is kinda meh because it rewrites the entire file
@@ -115,13 +121,17 @@ func (c *Contacts) ReadAll() error {
 
 func (c *Contacts) Delete(id int) error {
 	// I should have used a map, but I was not smart and so
-	// here we are slicing arrays for each delete
+	// here we are slicing slices for each delete
 
 	all := c.All()
-
-	newContacts := append(all[0:id], all[id:len(all)-1]...)
-
-	*c = newContacts
+	for i, contact := range all {
+		if contact.ID == id {
+			log.Printf("Found %d at %d", id, i)
+			newContacts := append(all[0:i], all[i+1:]...)
+			*c = newContacts
+			break
+		}
+	}
 
 	err := (*c).WriteAll()
 	if err != nil {
@@ -152,7 +162,13 @@ func (c *Contacts) Update(id int, first, last, email, phone string) (Contact, er
 
 	log.Printf("%+v", updatedContact)
 
-	(*c)[id] = updatedContact
+	// Find the appropriate contact and update it
+	for i, t := range c.All() {
+		if t.ID == id {
+			(*c)[i] = updatedContact
+			break
+		}
+	}
 
 	err := c.WriteAll()
 	if err != nil {
