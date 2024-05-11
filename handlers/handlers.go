@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -203,5 +204,67 @@ func DeleteContact(w http.ResponseWriter, r *http.Request) {
 		flash.Queue("Error deleting contact")
 	}
 
+	// if from inline delete send back empty body
+	if r.Header.Get("HX-Trigger") == "delete-btn" {
+		w.Write([]byte(""))
+		return
+	}
+
 	http.Redirect(w, r, "/contacts", http.StatusSeeOther)
+}
+
+func DeleteMultipleContacts(w http.ResponseWriter, r *http.Request) {
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		log.Println("Error reading body", err)
+		http.Error(w, "Error reading body", http.StatusBadRequest)
+		return
+	}
+
+	parsed := parseFormBody(string(body))
+	contactIds := parsed["selected_contact_ids"]
+
+	if len(contactIds) == 0 {
+		flash.Queue("No contacts selected")
+		http.Redirect(w, r, "/contacts", http.StatusSeeOther)
+		return
+	}
+
+	log.Println("Deleting contacts with IDs: ", contactIds)
+	
+	for _, id := range contactIds {
+		contactId, convErr := strconv.Atoi(id)
+		if convErr != nil {
+			flash.Queue("Error during delete: "+id, convErr.Error())
+			continue
+		}
+
+		contactList.Delete(contactId)
+	}
+
+	writeErr := contactList.WriteAll()
+	if writeErr != nil {
+		flash.Queue("Error saving data after deleting contact")
+	}
+
+	f := "Deleted contacts: "
+	for i, id := range contactIds {
+		f += id
+		if i < len(contactIds) - 1 {
+			f += ", "
+		}		
+	}
+
+	flash.Queue(f)
+
+
+	contacts_set, err := contactList.Partial(0, 10)
+	if err != nil {
+		flash.Queue("Error fetching first 10 contacts (try reloading the page?)")
+		contacts_set = []contacts.Contact{}
+	}
+
+	templ.Handler(views.Contacts(contacts_set, "", 0)).ServeHTTP(w, r)
+
 }

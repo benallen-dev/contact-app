@@ -26,6 +26,10 @@ table {
     margin-bottom: 12px;
 }
 
+td input[type="checkbox"] {
+	margin: revert;
+}
+
 .error {
     display: inline-block;
     color: darkred;

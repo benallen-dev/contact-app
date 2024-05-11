@@ -25,6 +25,7 @@ func main() {
 	http.HandleFunc("POST /contacts/{contactId}/delete", handlers.PostDeleteContact)
 
 	// Fancy HTMX endpoints here
+	http.HandleFunc("DELETE /contacts", handlers.DeleteMultipleContacts)
 	http.HandleFunc("DELETE /contacts/{contactId}", handlers.DeleteContact)
 
 	err := http.ListenAndServe(":"+PORT, nil)

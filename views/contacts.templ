@@ -23,49 +23,39 @@ templ Contacts(contacts_set []contacts.Contact, q string, page int) {
 					hx-push-url="true"
 					hx-indicator="#spinner"
 				/>
-				<img
-					id="spinner"
-					class="htmx-indicator spinner"
-					src="/img/spinning-circles.svg"
-					alt="Request in flight..."
-				/>
+				<img id="spinner" class="htmx-indicator spinner" src="/img/spinning-circles.svg" alt="Request in flight..."/>
 				<input type="submit" value="Search"/>
 			</form>
-			<table>
-				<thead>
-					<tr>
-						<th>ID</th>
-						<th>First</th>
-						<th>Last</th>
-						<th>Email</th>
-						<th>Phone</th>
-					</tr>
-				</thead>
-				<tbody>
-					@ContactList(contacts_set)
-					if len(contacts_set) == 10 {
+			<form>
+				<!-- Added so HTMX includes checkbox values in the DELETE request -->
+				<table>
+					<thead>
 						<tr>
-							<td colspan="5" style="padding: 24px 0; text-align: center">
-								<button
-									hx-target="closest tr"
-									hx-swap="outerHTML"
-									hx-select="tbody > tr"
-									hx-get={ "/contacts?page="+strconv.Itoa(page+1) }
-									hx-indicator="#scroll-spinner"
-								>
-									Load More
-								</button>
-								<img
-									id="scroll-spinner"
-									class="htmx-indicator spinner"
-									src="/img/spinning-circles.svg"
-									alt="Loading more..."
-								/>
-							</td>
+							<th></th>
+							<th>First</th>
+							<th>Last</th>
+							<th>Email</th>
+							<th>Phone</th>
 						</tr>
-					}
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						@ContactList(contacts_set)
+						if len(contacts_set) == 10 {
+							<tr>
+								<td colspan="5" style="padding: 24px 0; text-align: center">
+									<button hx-target="closest tr" hx-swap="outerHTML" hx-select="tbody > tr" hx-get={ "/contacts?page=" + strconv.Itoa(page+1) } hx-indicator="#scroll-spinner">
+										Load More
+									</button>
+									<img id="scroll-spinner" class="htmx-indicator spinner" src="/img/spinning-circles.svg" alt="Loading more..." />
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+				<button hx-delete="/contacts" hx-confirm="Are you sure you want to delete these contacts?" hx-target="body">
+					Delete Selected Contacts
+				</button>
+			</form>
 			<p>
 				<a href=" /contacts/new">Add Contact</a>
 				<span hx-get="/contacts/count" hx-trigger="load">

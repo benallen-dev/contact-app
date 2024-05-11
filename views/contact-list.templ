@@ -9,7 +9,7 @@ import (
 templ ContactList(contacts_set []contacts.Contact) {
 	for _, contact := range contacts_set {
 		<tr>
-			<td>{ strconv.Itoa(contact.ID) }</td>
+			<td><input type="checkbox" name="selected_contact_ids" value={ strconv.Itoa(contact.ID) }></input></td>
 			<td>{ contact.First }</td>
 			<td>{ contact.Last }</td>
 			<td>{ contact.Email }</td>
@@ -17,10 +17,12 @@ templ ContactList(contacts_set []contacts.Contact) {
 			<td>
 				<a href={ templ.URL("/contacts/" + strconv.Itoa(contact.ID) + "/edit") }>Edit</a>
 				<a href={ templ.URL("/contacts/" + strconv.Itoa(contact.ID)) }>View</a>
-				<a href=""
-					hx-delete={ "/contacts/"+ strconv.Itoa(contact.ID) } 
+				<a href="#"
+					id="delete-btn"
+					hx-delete={ "/contacts/"+ strconv.Itoa(contact.ID) }
 					hx-confirm="Are you sure you want to delete this contact?"
-					hx-target="body"
+					hx-swap="outerHTML swap:1s"
+					hx-target="closest tr"
 					hx-push-url="true">Delete</a>
 			</td>
 		</tr>
