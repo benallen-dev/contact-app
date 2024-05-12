@@ -62,8 +62,8 @@ func task(a *Archiver) {
 
 		}
 
-		// incr is a random float between 0.1 and 0.03
-		incr := ((rand.Float64() / 5) + 0.1) * 0.1
+		// incr is a random float
+		incr := ((rand.Float64() / 5) + 0.1) * 0.3
 		a.progress += incr
 
 		if a.progress > 1 {

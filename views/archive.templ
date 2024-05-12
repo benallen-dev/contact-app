@@ -1,0 +1,38 @@
+package views
+
+import (
+	"fmt"
+
+	"github.com/benallen-dev/contact-app/pkg/archiver"
+)
+
+func attrs(a *archiver.Archiver) templ.Attributes {
+	return templ.Attributes{
+		"role": "progressbar",
+		"aria-valuenow": fmt.Sprintf("%3.f", a.Progress() * 100),
+		"class": "progress-bar",
+		"style": fmt.Sprintf("width: %3.f%%", a.Progress() * 100),
+		}
+}
+		
+templ Archive(a *archiver.Archiver) {
+	<div id="archive-ui" hx-target="this" hx-swap="outerHTML">
+		if a.Status() == archiver.StatusWaiting {
+			<button hx-post="/contacts/archive">
+				Download Contact Archive
+			</button>
+		} else if a.Status() == archiver.StatusRunning {
+			<div hx-get="/contacts/archive" hx-trigger="load delay:500ms">
+				Creating Archive...
+				<div class="progress">
+					<div { attrs(a)... }> </div>
+				</div>
+			</div>
+		} else {
+			<a hx-boost="false" href="contacts/archive/file" download="archive.csv">
+				Archive Ready! Click here to download.
+			</a>
+		}
+
+	</div>
+}

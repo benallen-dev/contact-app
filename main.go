@@ -20,6 +20,10 @@ func main() {
 	http.HandleFunc("GET /contacts/{contactId}/edit", handlers.GetEditContactForm)
 	http.HandleFunc("GET /contacts/{contactId}/email", handlers.ValidateEmail)
 
+	http.HandleFunc("GET /contacts/archive", handlers.GetArchive)
+	http.HandleFunc("POST /contacts/archive", handlers.PostArchive)
+	http.HandleFunc("GET /contacts/archive/file", handlers.GetArchiveFile)
+
 	http.HandleFunc("POST /contacts/new", handlers.PostNewContactForm)
 	http.HandleFunc("POST /contacts/{contactId}/edit", handlers.PostEditContactForm)
 	http.HandleFunc("POST /contacts/{contactId}/delete", handlers.PostDeleteContact)

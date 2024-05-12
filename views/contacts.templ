@@ -8,6 +8,8 @@ import (
 
 templ Contacts(contacts_set []contacts.Contact, q string, page int) {
 	@Layout() {
+		<div hx-get="/contacts/archive" hx-trigger="load">
+		</div>
 		<div>
 			<form action="/contacts" method="get" class="tool-bar">
 				<label for="search">Search Term</label>
