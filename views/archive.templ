@@ -30,7 +30,7 @@ templ Archive(a *archiver.Archiver) {
 				</div>
 			</div>
 		} else {
-			<a hx-boost="false" href="contacts/archive/file" download="archive.csv">
+			<a hx-boost="false" href="contacts/archive/file" download="archive.csv" _="on load click() me">
 				Archive Ready! Click here to download.
 			</a>
 		}
