@@ -54,6 +54,8 @@ func GetContacts(w http.ResponseWriter, r *http.Request) {
 		contacts_set = contactList.Search(q)
 	}
 
+	log.Println("Special token: ", r.Header.Get("X-Special-Token"))
+
 	if r.Header.Get("HX-Trigger") == "search" {
 		templ.Handler(views.ContactList(contacts_set)).ServeHTTP(w, r)
 	} else {

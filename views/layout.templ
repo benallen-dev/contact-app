@@ -18,6 +18,11 @@ templ Layout() {
 	</head>
 	
 	<body hx-boost="true">
+		<script>
+				document.body.addEventListener('htmx:configRequest', (event) => {
+					event.detail.headers['X-Special-Token'] = "69420";
+				});
+		</script>
 		<main>
 			<header>
 				<h1>
