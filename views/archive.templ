@@ -30,10 +30,13 @@ templ Archive(a *archiver.Archiver) {
 				</div>
 			</div>
 		} else {
-			<a hx-boost="false" href="contacts/archive/file" download="archive.csv" _="on load click() me">
+			<a hx-boost="false" href="contacts/archive/file" download="archive.csv">
 				Archive Ready! Click here to download.
 			</a>
 		}
 
 	</div>
+	if a.Status() == archiver.StatusComplete {
+		<div hx-swap-oob="outerHTML:#count-cancel">Hi! I'm out of band!</div>
+	}
 }

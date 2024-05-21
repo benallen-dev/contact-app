@@ -22,6 +22,12 @@ templ Layout() {
 				document.body.addEventListener('htmx:configRequest', (event) => {
 					event.detail.headers['X-Special-Token'] = "69420";
 				});
+
+				document.body.addEventListener('htmx:beforeSwap', (event) => {
+					if (event.detail.xhr.status >= 400 && event.detail.xhr.status < 500) {
+						alert('Error ' + event.detail.xhr.status);
+					}
+				});
 		</script>
 		<main>
 			<header>

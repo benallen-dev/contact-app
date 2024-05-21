@@ -66,7 +66,7 @@ func GetContacts(w http.ResponseWriter, r *http.Request) {
 func GetContactCount(w http.ResponseWriter, r *http.Request) {
 	count := contactList.Count()
 
-	time.Sleep(1500 * time.Millisecond)
+	time.Sleep(3500 * time.Millisecond)
 
 	w.Write([]byte("(" + strconv.Itoa(count) + " total contacts)"))
 }
